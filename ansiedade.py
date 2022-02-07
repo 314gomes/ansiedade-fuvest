@@ -1,4 +1,5 @@
 import os
+from traceback import print_tb
 #import sys
 from discord.ext import tasks
 from dotenv import load_dotenv
@@ -7,9 +8,19 @@ import discord
 
 import urllib.request, json
 
+import pickle
+
 class MyClient(discord.Client):
 	def __init__(self, *args, **kwargs):
-		self.channels = [460965505222574102, 691056194852487229]
+		self.channelsFileName = "channels.pickle"
+		try:
+			with open('channels.pickle', 'rb') as handle:
+				self.channels = pickle.load(handle)
+			print('Channels file found. The following channels will be used for notifying:')
+
+		except FileNotFoundError:
+			print('Channels file not found. This is either your first time running this or an error has ocurred.')
+
 		self.URL = "https://www.fuvest.br/wp-json/wp/v2/media"
 		
 		super().__init__(*args, **kwargs)
@@ -19,11 +30,39 @@ class MyClient(discord.Client):
 	async def on_ready(self):
 			print('Logged on as {0}!'.format(self.user))
 
+	def save_channels(self):
+		with open('channels.pickle', 'wb') as handle:
+			pickle.dump(self.channels, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 	async def notify(self, message, file = None):
 		for i in self.channels:
 			channel = self.get_channel(i)
 			await channel.send(message, file=file)
-	
+
+	async def on_message(self, message):
+		if message.author.id != self.user.id:
+			if message.content.startswith('oi bot'): #era pra isso ser só um teste mas vou deixar aqui
+				await message.reply('oi :]')
+			
+			if message.content.startswith('%'):
+				command = message.content[1:]
+
+				if command == "help":
+					await message.reply("mensagem de ajuda ainda será feita")
+				elif command == "add-channel":
+					channel = message.channel.id
+
+					if channel in self.channels:
+						await message.reply("Esse canal já foi adicionado. Vou pingar everyone aqui quando sair o resultado da FUVEST.")
+						
+					else:
+						self.channels.append(channel)
+						self.save_channels()
+						await message.reply("Esse canal será adicionado e vou pingar everyone aqui quando sair o resultado da FUVEST.")
+
+				else:
+					await message.reply("Não reconheço esse comando. Digite direito por favor.")
+
 	@tasks.loop(seconds = 10)
 	async def background_task(self): #função de fundo pra testar se saiu e resultado
 		print("Test initiated")
