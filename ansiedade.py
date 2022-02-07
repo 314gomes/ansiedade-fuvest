@@ -67,7 +67,7 @@ class MyClient(discord.Client):
 	async def background_task(self): #função de fundo pra testar se saiu e resultado
 		print("Test initiated")
 		
-		urllib.request.urlretrieve("https://www.fuvest.br/wp-json/wp/v2/media", "new.json")
+		urllib.request.urlretrieve(self.URL, "new.json")
 
 		originalFile = open("original.json")
 		newFile = open("new.json")
@@ -89,7 +89,7 @@ class MyClient(discord.Client):
 			
 			file = discord.File(open(name,'rb'), name)
 
-			await self.notify("@everyone A FUVEST fez o upload de um novo arquivo. O link para baixá-lo é {} . Isso é tudo que sei.".format(link), file=file)
+			await self.notify("@everyone A FUVEST fez o upload de um novo arquivo. O link para baixá-lo é {} . Isso é tudo que sei.".format(link))
 
 			os.remove('original.json')
 			os.rename('new.json', 'original.json')
