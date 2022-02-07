@@ -19,6 +19,7 @@ class MyClient(discord.Client):
 			print('Channels file found.')
 
 		except FileNotFoundError:
+			self.channels = []
 			print('Channels file not found. This is either your first time running this or an error has ocurred.')
 
 		self.URL = "https://www.fuvest.br/wp-json/wp/v2/media"
