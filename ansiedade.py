@@ -16,7 +16,7 @@ class MyClient(discord.Client):
 		try:
 			with open('channels.pickle', 'rb') as handle:
 				self.channels = pickle.load(handle)
-			print('Channels file found. The following channels will be used for notifying:')
+			print('Channels file found.')
 
 		except FileNotFoundError:
 			print('Channels file not found. This is either your first time running this or an error has ocurred.')
