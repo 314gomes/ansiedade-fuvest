@@ -59,7 +59,16 @@ class MyClient(discord.Client):
 						self.channels.append(channel)
 						self.save_channels()
 						await message.reply("Esse canal será adicionado e vou pingar everyone aqui quando sair o resultado da FUVEST.")
-
+				
+				elif command == "remove-channel":
+					channel = message.channel.id
+					if channel in self.channels:
+						self.channels.remove(channel)
+						self.save_channels()
+						await message.reply("Esse canal será removido e não vou mais pingar everyone quando sair o resultado da FUVEST.")
+					else:
+						await message.reply("Esse canal já foi removido ou nunca foi adicionado. Nada foi feito.")
+				
 				else:
 					await message.reply("Não reconheço esse comando. Digite direito por favor.")
 
