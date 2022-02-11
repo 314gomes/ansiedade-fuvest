@@ -35,8 +35,10 @@ class MyClient(discord.Client):
 		with open('channels.pickle', 'wb') as handle:
 			pickle.dump(self.channels, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-	async def notify(self, message, file = None):
+	async def notify(self, message, name = None):
 		for i in self.channels:
+			file = discord.File(open(name,'rb'), name)
+
 			channel = self.get_channel(i)
 			await channel.send(message, file=file)
 
@@ -97,9 +99,7 @@ class MyClient(discord.Client):
 			name = new[0].get('slug') + '.pdf'
 			urllib.request.urlretrieve(link, name)
 			
-			file = discord.File(open(name,'rb'), name)
-
-			await self.notify("@everyone A FUVEST fez o upload de um novo arquivo. O link para baixá-lo é {} . Isso é tudo que sei.".format(link))
+			await self.notify("@everyone A FUVEST fez o upload de um novo arquivo. O link para baixá-lo é {} . Isso é tudo que sei.".format(link), name=name)
 
 			os.remove('original.json')
 			os.rename('new.json', 'original.json')
