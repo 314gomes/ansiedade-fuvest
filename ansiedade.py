@@ -16,7 +16,7 @@ class MyClient(discord.Client):
 		try:
 			with open('channels.pickle', 'rb') as handle:
 				self.channels = pickle.load(handle)
-			print('Channels file found.')
+			print('Channels file found. Active in {} channels.'.format(len(self.channels)))
 
 		except FileNotFoundError:
 			self.channels = []
